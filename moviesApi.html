@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Movies</title>
+    <style>
+#movie-cont{
+  
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(3,1fr);
+
+}
+h4{
+    display: none;
+    text-align: center;
+}
+
+#container{
+    display: flex;
+    justify-content: center;
+}
+#searchbox{
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+background-color:rgb(121,36,163,.3);
+color:white;
+width: 300px;
+margin: 10px;
+outline: 0;
+}
+#movie-cont div{
+    border: 2px solid ;
+    background-color:rgb(99,52,196,0.5) ;
+    border-left-color:rgb(107,0,26) ;
+    border-bottom-color: rgb(107,0,26);
+    border-right-color: rgb(139,35,140);
+    border-top-color: rgb(139,35,140);
+
+}
+#search{
+    width: 150px;
+    height: 40px;
+    background-color:rgb(99,52,196,0.7);
+    border: none;
+    margin: 10px;
+}
+body{
+  
+    background: url('https://images.unsplash.com/photo-1585951237313-1979e4df7385?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=870&q=80');
+    color:rgba(255, 255, 255, 0.747);
+   
+}
+
+    
+#ig{
+    display: none;
+   width: 100px;
+   margin: auto;
+}
+
+    </style>
+</head>
+<body>
+    <img src="https://media1.giphy.com/media/3osxY9kuM2NGUfvThe/200w.webp?cid=ecf05e47mngs8ujqkjnvesbwtr0co3mvfpr4ocq5v4cvou8w&rid=200w.webp&ct=g" alt="" id="ig">
+    <h4 id="h4">Error:Movie Doesn't Exist!</h4>
+
+        <div id="container">
+            <input type="text" id="searchbox" placeholder="Search Moive Here">
+           <input type="submit" value="Search" id="search"></div>
+    <div id="movie-cont">
+    
+    </div>
+    
+    
+    <script>
+const my_key='6d44b8e5';
+const title=document.getElementById('searchbox')
+const btn=document.getElementById('search')
+    function loadMovies(){
+       // console.log()
+      return fetch(`http://www.omdbapi.com/?t=${title.value}}&apikey=6d44b8e5`)
+      .then(function(res){
+          return res.json()
+      })
+      .then(function(res){
+          if(title.value.length<1||res.Title===undefined){
+//alert('Movie does not exist')
+var img=document.getElementById('ig')
+//var h4=document.getElementById('h4')
+ig.style.display='block';
+h4.style.display='block';
+
+setTimeout(function(){
+    ig.style.display='none' 
+    h4.style.display='none' 
+},2000)
+          }
+          else{
+          console.log(res);
+          handleSearch(res)
+          }
+      })
+      .catch(
+          function(err){
+              return err
+          }
+      )
+    }
+//loadMovies('Good Will Hunting')
+
+    window.addEventListener('load',function(){
+        btn.addEventListener('click',loadMovies)
+    })
+    function handleSearch(info){
+const movieCont=document.getElementById('movie-cont')
+const div=document.createElement('div');
+const image=document.createElement('img')
+image.src=info.Poster
+// image.style.width='150px'
+
+const h3=document.createElement('h3');
+h3.textContent=`${info.Title}(${info.Year})`
+const p=document.createElement('p')
+p.textContent=`Cast: ${info.Actors}`
+const rating=document.createElement('p')
+
+if(info.imdbRating>8.5){
+    rating.textContent=`Imdb Rating: ${info.imdbRating}(Recommended to watch)`
+}
+else{
+    rating.textContent=`Imdb Rating: ${info.imdbRating}`
+}
+const lang=document.createElement('p')
+lang.textContent=`Language: ${info.Language}`
+const plot=document.createElement('p')
+plot.textContent= info.Plot
+const genre=document.createElement('p')
+genre.textContent=`Genre: ${info.Genre}`
+
+movieCont.appendChild(div)
+div.append(image,h3,p,rating,lang,plot,genre)
+    }
+    </script>
+</body>
+</html>
